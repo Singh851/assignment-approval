@@ -831,13 +831,23 @@ tbody tr:last-child td{border-bottom:none}
           </div>
         </div>
 
-        <div class="sim-controls">
-          <button class="btn-sim" id="btn-run-sim" onclick="runSimulation()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
-            Run Simulation
+        <div class="sim-controls" style="flex-wrap:wrap">
+          <button class="btn-sim" onclick="runSimulation('api')" style="background:linear-gradient(135deg,var(--black),var(--teal))">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            Simulate: API Integration
+          </button>
+          <button class="btn-sim" onclick="runSimulation('email')" style="background:linear-gradient(135deg,var(--black),var(--purple))">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Simulate: Email Ingestion
+          </button>
+          <button class="btn-sim" onclick="runSimulation('sftp')" style="background:linear-gradient(135deg,var(--black),var(--yellow))">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            Simulate: Watched Folder
           </button>
           <button class="btn-sim-reset" id="btn-reset-sim" onclick="resetSimulation()" style="display:none">Reset</button>
-          <span id="sim-status" style="font-size:13px;color:var(--gray)">Click to simulate a new cost estimate being produced in LINK</span>
+        </div>
+        <div style="margin-bottom:16px">
+          <span id="sim-status" style="font-size:13px;color:var(--gray)">Select an integration method above to simulate the full document distribution flow</span>
         </div>
 
         <div class="email-preview" id="email-preview">
@@ -1746,32 +1756,71 @@ function showToast(msg, type){
 
 // ===== AUTO-DISTRIBUTION SIMULATION =====
 let simRunning = false;
-function runSimulation(){
+const simConfigs = {
+  api: {
+    color: 'var(--teal)',
+    label: 'API Integration',
+    step1: {title:'Document Produced', desc:'Cost estimate created in LINK'},
+    step2: {title:'API Webhook Fires', desc:'LINK triggers Cozm webhook endpoint'},
+    step3: {title:'Email Composed', desc:'Branded email with portal link generated'},
+    step4: {title:'Delivered', desc:'Approver receives email with one-click access'},
+    messages: [
+      'New cost estimate produced in LINK for Aiko Tanaka...',
+      'LINK webhook triggered &mdash; Cozm API received document payload in real-time...',
+      'Composing branded email with direct portal link and document summary...',
+      'Email delivered to approver. One-click approval ready.'
+    ]
+  },
+  email: {
+    color: 'var(--purple)',
+    label: 'Email Ingestion',
+    step1: {title:'Document Produced', desc:'Cost estimate created in LINK'},
+    step2: {title:'Email Received', desc:'LINK emails PDF to intake@cozm.io'},
+    step3: {title:'Auto-Parsed & Matched', desc:'Cozm extracts data, matches assignee, composes email'},
+    step4: {title:'Delivered', desc:'Approver receives email with one-click access'},
+    messages: [
+      'New cost estimate produced in LINK for Aiko Tanaka...',
+      'LINK emailed PDF to intake@cozm.io &mdash; Cozm inbox received attachment...',
+      'Auto-parsing PDF, matching assignee record, composing approval email...',
+      'Email delivered to approver. One-click approval ready.'
+    ]
+  },
+  sftp: {
+    color: 'var(--yellow)',
+    label: 'Watched Folder',
+    step1: {title:'Document Produced', desc:'Cost estimate created in LINK'},
+    step2: {title:'File Detected', desc:'LINK exports PDF to shared SFTP folder'},
+    step3: {title:'Auto-Processed', desc:'Cozm picks up file, matches assignee, composes email'},
+    step4: {title:'Delivered', desc:'Approver receives email with one-click access'},
+    messages: [
+      'New cost estimate produced in LINK for Aiko Tanaka...',
+      'New PDF detected in watched folder /exports/cost-estimates/ &mdash; Cozm picking up file...',
+      'File processed, assignee matched, composing branded approval email...',
+      'Email delivered to approver. One-click approval ready.'
+    ]
+  }
+};
+
+function runSimulation(method){
   if(simRunning) return;
   simRunning = true;
-  const btn = document.getElementById('btn-run-sim');
+  const config = simConfigs[method];
   const resetBtn = document.getElementById('btn-reset-sim');
   const status = document.getElementById('sim-status');
   const emailPreview = document.getElementById('email-preview');
-  btn.disabled = true;
+  document.querySelectorAll('.btn-sim').forEach(b=>b.disabled=true);
   resetBtn.style.display = 'none';
 
-  // Update email with logged-in user
   if(currentUser){
     document.getElementById('email-to').textContent = currentUser.email;
   }
 
-  const steps = ['step-1','step-2','step-3','step-4'];
-  const messages = [
-    'New cost estimate detected in LINK for Aiko Tanaka...',
-    'Cozm API integration has picked up the document...',
-    'Composing branded email with portal link...',
-    'Email delivered to approver. One-click approval ready.'
-  ];
-
-  // Reset all steps
-  steps.forEach(s=>{
-    const el = document.getElementById(s);
+  // Update pipeline labels for this method
+  const stepEls = [document.getElementById('step-1'),document.getElementById('step-2'),document.getElementById('step-3'),document.getElementById('step-4')];
+  const stepConfigs = [config.step1, config.step2, config.step3, config.step4];
+  stepEls.forEach((el,idx)=>{
+    el.querySelector('.pipeline-title').textContent = stepConfigs[idx].title;
+    el.querySelector('.pipeline-desc').textContent = stepConfigs[idx].desc;
     el.classList.remove('done','active');
     el.classList.add('waiting');
   });
@@ -1780,34 +1829,32 @@ function runSimulation(){
   let i = 0;
   function nextStep(){
     if(i > 0){
-      document.getElementById(steps[i-1]).classList.remove('active');
-      document.getElementById(steps[i-1]).classList.add('done');
+      stepEls[i-1].classList.remove('active');
+      stepEls[i-1].classList.add('done');
     }
-    if(i < steps.length){
-      const el = document.getElementById(steps[i]);
-      el.classList.remove('waiting');
-      el.classList.add('active');
-      status.innerHTML = '<span style="color:var(--teal)">' + messages[i] + '</span>';
+    if(i < 4){
+      stepEls[i].classList.remove('waiting');
+      stepEls[i].classList.add('active');
+      status.innerHTML = '<span style="color:'+config.color+';font-weight:500">' + config.messages[i] + '</span>';
       i++;
-      if(i === steps.length){
+      if(i === 4){
         setTimeout(()=>{
-          document.getElementById(steps[i-1]).classList.remove('active');
-          document.getElementById(steps[i-1]).classList.add('done');
+          stepEls[3].classList.remove('active');
+          stepEls[3].classList.add('done');
           emailPreview.classList.add('visible');
-          status.innerHTML = '<span style="color:var(--green);font-weight:600">Simulation complete. Email delivered and portal link active.</span>';
-          btn.disabled = false;
+          status.innerHTML = '<span style="color:var(--green);font-weight:600">Simulation complete (' + config.label + '). Email delivered and portal link active.</span>';
+          document.querySelectorAll('.btn-sim').forEach(b=>b.disabled=false);
           resetBtn.style.display = 'inline-block';
           simRunning = false;
-          // Add to log
           const tbody = document.getElementById('log-tbody');
           const now = new Date();
           const timeStr = now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+', '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
           const newRow = document.createElement('tr');
           newRow.style.background = 'var(--green-light)';
           newRow.style.animation = 'fadeIn .5s ease';
-          newRow.innerHTML = '<td><strong>'+timeStr+'</strong></td><td>Aiko Tanaka</td><td>Cost Estimate</td><td>'+(currentUser?currentUser.email:'approver@globalbank.com')+'</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td>';
+          newRow.innerHTML = '<td><strong>'+timeStr+'</strong></td><td>Aiko Tanaka</td><td>Cost Estimate</td><td>'+(currentUser?currentUser.email:'approver@globalbank.com')+'</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered via '+config.label+'</span></td>';
           tbody.insertBefore(newRow, tbody.firstChild);
-          showToast('Email auto-sent to approver with portal link','success');
+          showToast('Email auto-sent via ' + config.label,'success');
         },1500);
       } else {
         setTimeout(nextStep, 1500);
@@ -1825,8 +1872,9 @@ function resetSimulation(){
     el.classList.add('waiting');
   });
   document.getElementById('email-preview').classList.remove('visible');
-  document.getElementById('sim-status').textContent = 'Click to simulate a new cost estimate being produced in LINK';
+  document.getElementById('sim-status').textContent = 'Select an integration method above to simulate the full document distribution flow';
   document.getElementById('btn-reset-sim').style.display = 'none';
+  document.querySelectorAll('.btn-sim').forEach(b=>b.disabled=false);
   simRunning = false;
 }
 
