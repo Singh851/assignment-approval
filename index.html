@@ -820,20 +820,20 @@ tbody tr:last-child td{border-bottom:none}
             </div>
             <p>The following documents are available for your review:</p>
             <div class="email-doc-cards">
-              <div class="email-doc-card">
+              <div class="email-doc-card" style="cursor:pointer" onclick="openDetailToTab('ASG-2026-005','cost-estimate')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FAEBD" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
                 Cost Estimate
               </div>
-              <div class="email-doc-card">
+              <div class="email-doc-card" style="cursor:pointer" onclick="openDetailToTab('ASG-2026-005','balance-sheet')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FAEBD" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
                 Balance Sheet
               </div>
-              <div class="email-doc-card">
+              <div class="email-doc-card" style="cursor:pointer" onclick="openDetailToTab('ASG-2026-005','assignment-letter')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FAEBD" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 Assignment Letter
               </div>
             </div>
-            <div class="email-cta">Review &amp; Approve in Portal &rarr;</div>
+            <div class="email-cta" style="cursor:pointer" onclick="openDetail('ASG-2026-005')">Review &amp; Approve in Portal &rarr;</div>
             <p style="font-size:12px;color:var(--gray)">You can review all documents, add comments, and approve or request changes directly in the Cozm portal. No downloads required.</p>
             <div class="email-footer">
               Sent automatically by Cozm &bull; Global Mobility Approval Platform<br>
@@ -1376,6 +1376,15 @@ function openDetail(id){
     <div id="doc-content">${renderCostEstimate(a)}</div>
     ${renderComments(a)}
   `;
+}
+
+function openDetailToTab(id, tab){
+  openDetail(id);
+  setTimeout(()=>{
+    const tabs = document.querySelectorAll('.doc-tab');
+    const tabMap = {'cost-estimate':0,'balance-sheet':1,'assignment-letter':2};
+    if(tabs[tabMap[tab]]) showDocTab(tab, id, tabs[tabMap[tab]]);
+  },50);
 }
 
 function showDocTab(tab, id, btn){
