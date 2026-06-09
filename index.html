@@ -346,6 +346,76 @@ tbody tr:last-child td{border-bottom:none}
   .bs-summary{grid-template-columns:1fr}
   .detail-header{flex-direction:column;gap:16px}
 }
+
+/* ===== AUTO-DISTRIBUTION ===== */
+.pipeline{display:flex;align-items:stretch;gap:0;margin-bottom:28px;position:relative}
+.pipeline-step{flex:1;background:white;border:1px solid var(--border);padding:20px 16px;text-align:center;
+  position:relative;transition:all .5s}
+.pipeline-step:first-child{border-radius:var(--r) 0 0 var(--r)}
+.pipeline-step:last-child{border-radius:0 var(--r) var(--r) 0}
+.pipeline-step.done{background:var(--green-light);border-color:var(--green)}
+.pipeline-step.active{background:var(--teal-bg);border-color:var(--teal);box-shadow:0 0 0 3px rgba(63,174,189,.2)}
+.pipeline-step.waiting{opacity:.5}
+.pipeline-num{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--gray);
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-bottom:8px;transition:all .5s}
+.pipeline-step.done .pipeline-num{background:var(--green);color:white}
+.pipeline-step.active .pipeline-num{background:var(--teal);color:white;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(63,174,189,.4)}50%{box-shadow:0 0 0 8px rgba(63,174,189,0)}}
+.pipeline-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.pipeline-desc{font-size:11px;color:var(--gray)}
+.pipeline-arrow{position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:2;
+  width:24px;height:24px;background:white;border:1px solid var(--border);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:14px}
+.pipeline-step.done .pipeline-arrow{background:var(--green);color:white;border-color:var(--green)}
+
+.sim-controls{display:flex;gap:12px;align-items:center;margin-bottom:24px}
+.btn-sim{padding:12px 28px;border-radius:var(--rs);font-size:14px;font-weight:600;color:white;
+  background:linear-gradient(135deg,var(--black),var(--teal));transition:all .2s;display:flex;align-items:center;gap:8px}
+.btn-sim:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-sim:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-sim-reset{background:white;color:var(--gray);border:1px solid var(--border);padding:10px 20px;
+  border-radius:var(--rs);font-size:13px;font-weight:500}
+
+.email-preview{background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--border);
+  overflow:hidden;max-width:640px;margin:0 auto;opacity:0;transform:translateY(20px);transition:all .5s}
+.email-preview.visible{opacity:1;transform:translateY(0)}
+.email-bar{background:#F5F5F5;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.email-dot{width:10px;height:10px;border-radius:50%}
+.email-bar-title{font-size:12px;color:var(--gray);margin-left:8px}
+.email-meta{padding:16px 20px;border-bottom:1px solid var(--border);font-size:13px}
+.email-meta-row{display:flex;gap:8px;margin-bottom:4px}
+.email-meta-label{color:var(--gray);min-width:50px}
+.email-meta-value{font-weight:500}
+.email-body-preview{padding:24px 20px}
+.email-body-preview .email-logo{margin-bottom:16px}
+.email-body-preview .email-logo img{height:28px}
+.email-body-preview h3{font-size:16px;margin-bottom:12px}
+.email-body-preview p{font-size:13px;color:#555;margin-bottom:10px;line-height:1.7}
+.email-doc-cards{display:flex;gap:10px;margin:16px 0}
+.email-doc-card{flex:1;padding:12px;border:1px solid var(--border);border-radius:var(--rs);text-align:center;
+  font-size:12px;font-weight:600;color:var(--teal);background:var(--teal-bg)}
+.email-doc-card svg{display:block;margin:0 auto 6px}
+.email-cta{display:block;width:100%;padding:14px;background:linear-gradient(135deg,var(--black),var(--teal));
+  color:white;border-radius:var(--rs);font-size:14px;font-weight:600;text-align:center;margin:16px 0;letter-spacing:.3px}
+.email-footer{text-align:center;font-size:11px;color:var(--gray);padding-top:16px;border-top:1px solid var(--border);margin-top:16px}
+
+.dist-log{margin-top:24px}
+.dist-log h3{font-size:16px;margin-bottom:12px}
+.log-table{width:100%;background:white;border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
+.log-table th{background:var(--teal-bg);padding:10px 16px;text-align:left;font-size:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px;color:var(--gray)}
+.log-table td{padding:10px 16px;font-size:13px;border-top:1px solid var(--border)}
+
+.auto-rules{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.rule-card{background:white;border-radius:var(--r);padding:20px;border:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center}
+.rule-info h4{font-size:14px;margin-bottom:2px}
+.rule-info p{font-size:12px;color:var(--gray)}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background .2s}
+.toggle.on{background:var(--green)}
+.toggle-dot{width:20px;height:20px;border-radius:50%;background:white;position:absolute;top:2px;left:2px;
+  transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .toggle-dot{transform:translateX(20px)}
 </style>
 </head>
 <body>
@@ -421,6 +491,13 @@ tbody tr:last-child td{border-bottom:none}
         <div class="nav-item" data-page="how-it-works" onclick="showPage('how-it-works')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           How It Works
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Automation</div>
+        <div class="nav-item" data-page="auto-distribute" onclick="showPage('auto-distribute')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+          Auto-Distribution
         </div>
       </div>
     </nav>
@@ -642,6 +719,142 @@ tbody tr:last-child td{border-bottom:none}
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- ===== AUTO-DISTRIBUTION PAGE ===== -->
+      <div class="page" id="page-auto-distribute">
+        <div class="comparison-banner" style="margin-bottom:24px">
+          <h2 style="margin-bottom:8px;font-size:18px">Automated Document Distribution</h2>
+          <p style="color:rgba(255,255,255,.7);font-size:14px;margin:0">When a cost estimate, balance sheet, or assignment letter is produced in LINK, Cozm automatically detects it and emails the business approver with a direct link to review and approve &mdash; no downloads, no manual emails.</p>
+        </div>
+
+        <div class="auto-rules" id="auto-rules">
+          <div class="rule-card">
+            <div class="rule-info">
+              <h4>Cost Estimates</h4>
+              <p>Auto-email to approver when produced</p>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-dot"></div></div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-info">
+              <h4>Balance Sheets</h4>
+              <p>Auto-email to approver when updated</p>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-dot"></div></div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-info">
+              <h4>Assignment Letters</h4>
+              <p>Auto-email to approver when finalised</p>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-dot"></div></div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-info">
+              <h4>Reminder Emails</h4>
+              <p>Chase after 48hrs if no action taken</p>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-dot"></div></div>
+          </div>
+        </div>
+
+        <h3 style="font-size:16px;margin-bottom:12px">Live Pipeline</h3>
+        <div class="pipeline" id="pipeline">
+          <div class="pipeline-step waiting" id="step-1">
+            <div class="pipeline-num">1</div>
+            <div class="pipeline-title">Document Produced</div>
+            <div class="pipeline-desc">Cost estimate created in LINK</div>
+            <div class="pipeline-arrow">&rsaquo;</div>
+          </div>
+          <div class="pipeline-step waiting" id="step-2">
+            <div class="pipeline-num">2</div>
+            <div class="pipeline-title">Cozm Detects</div>
+            <div class="pipeline-desc">API integration auto-detects new document</div>
+            <div class="pipeline-arrow">&rsaquo;</div>
+          </div>
+          <div class="pipeline-step waiting" id="step-3">
+            <div class="pipeline-num">3</div>
+            <div class="pipeline-title">Email Composed</div>
+            <div class="pipeline-desc">Branded email with portal link generated</div>
+            <div class="pipeline-arrow">&rsaquo;</div>
+          </div>
+          <div class="pipeline-step waiting" id="step-4">
+            <div class="pipeline-num">4</div>
+            <div class="pipeline-title">Delivered</div>
+            <div class="pipeline-desc">Approver receives email with one-click access</div>
+          </div>
+        </div>
+
+        <div class="sim-controls">
+          <button class="btn-sim" id="btn-run-sim" onclick="runSimulation()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
+            Run Simulation
+          </button>
+          <button class="btn-sim-reset" id="btn-reset-sim" onclick="resetSimulation()" style="display:none">Reset</button>
+          <span id="sim-status" style="font-size:13px;color:var(--gray)">Click to simulate a new cost estimate being produced in LINK</span>
+        </div>
+
+        <div class="email-preview" id="email-preview">
+          <div class="email-bar">
+            <div class="email-dot" style="background:#FF5F57"></div>
+            <div class="email-dot" style="background:#FFBD2E"></div>
+            <div class="email-dot" style="background:#28C840"></div>
+            <span class="email-bar-title">Email Preview</span>
+          </div>
+          <div class="email-meta">
+            <div class="email-meta-row"><span class="email-meta-label">From:</span><span class="email-meta-value">noreply@cozm.io</span></div>
+            <div class="email-meta-row"><span class="email-meta-label">To:</span><span class="email-meta-value" id="email-to">approver@globalbank.com</span></div>
+            <div class="email-meta-row"><span class="email-meta-label">Subject:</span><span class="email-meta-value" id="email-subject">Action Required: Cost Estimate for Sarah Chen (London &rarr; Singapore)</span></div>
+          </div>
+          <div class="email-body-preview">
+            <div class="email-logo"><img src="https://public-cozm.s3.eu-central-1.amazonaws.com/assets/logos/the-cozm-logo.png" style="height:24px" onerror="this.outerHTML='<strong style=color:#3FAEBD;font-family:Outfit>Cozm</strong>'"></div>
+            <h3>New Assignment Documents Ready for Review</h3>
+            <p>A new <strong>Cost Estimate</strong> has been prepared for the following international assignment and requires your approval:</p>
+            <div style="background:var(--teal-bg);border-radius:8px;padding:14px;margin:12px 0;font-size:13px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--gray)">Assignee</span><strong>Sarah Chen</strong></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--gray)">Route</span><strong>London, UK &rarr; Singapore</strong></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--gray)">Type</span><strong>Long-Term Assignment (3 Years)</strong></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Est. Annual Cost</span><strong style="color:var(--teal)">&pound;409,600</strong></div>
+            </div>
+            <p>The following documents are available for your review:</p>
+            <div class="email-doc-cards">
+              <div class="email-doc-card">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FAEBD" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                Cost Estimate
+              </div>
+              <div class="email-doc-card">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FAEBD" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                Balance Sheet
+              </div>
+              <div class="email-doc-card">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FAEBD" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Assignment Letter
+              </div>
+            </div>
+            <div class="email-cta">Review &amp; Approve in Portal &rarr;</div>
+            <p style="font-size:12px;color:var(--gray)">You can review all documents, add comments, and approve or request changes directly in the Cozm portal. No downloads required.</p>
+            <div class="email-footer">
+              Sent automatically by Cozm &bull; Global Mobility Approval Platform<br>
+              This is an automated notification. Please do not reply to this email.
+            </div>
+          </div>
+        </div>
+
+        <div class="dist-log" id="dist-log">
+          <h3>Distribution Log</h3>
+          <table class="log-table">
+            <thead><tr><th>Time</th><th>Assignee</th><th>Document</th><th>Recipient</th><th>Status</th></tr></thead>
+            <tbody id="log-tbody">
+              <tr><td>5 Jun 2026, 14:33</td><td>Sarah Chen</td><td>Cost Estimate</td><td>approver@globalbank.com</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td></tr>
+              <tr><td>3 Jun 2026, 09:16</td><td>Marcus Weber</td><td>Cost Estimate</td><td>approver@globalbank.com</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td></tr>
+              <tr><td>1 Jun 2026, 16:21</td><td>Elena Volkov</td><td>Cost Estimate</td><td>approver@globalbank.com</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td></tr>
+              <tr><td>10 Mar 2026, 15:02</td><td>Priya Sharma</td><td>Cost Estimate</td><td>approver@globalbank.com</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td></tr>
+              <tr><td>20 Feb 2026, 11:45</td><td>David Mueller</td><td>Cost Estimate</td><td>approver@globalbank.com</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td></tr>
+              <tr><td>15 Apr 2026, 10:30</td><td>James O'Brien</td><td>Cost Estimate</td><td>approver@globalbank.com</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -981,7 +1194,7 @@ document.getElementById('email-input').addEventListener('input', ()=>{ document.
 function showPage(page, filter){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const titles = {dashboard:'Dashboard',assignments:'All Assignments','how-it-works':'How It Works'};
+  const titles = {dashboard:'Dashboard',assignments:'All Assignments','how-it-works':'How It Works','auto-distribute':'Auto-Distribution'};
   if(page==='assignments' && filter==='pending'){
     document.querySelector('[data-page="pending"]').classList.add('active');
     document.getElementById('page-title').textContent='Pending Approval';
@@ -1476,6 +1689,92 @@ function showToast(msg, type){
     '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
   }</svg>${msg}`;
   setTimeout(()=>toast.classList.remove('show'),3500);
+}
+
+// ===== AUTO-DISTRIBUTION SIMULATION =====
+let simRunning = false;
+function runSimulation(){
+  if(simRunning) return;
+  simRunning = true;
+  const btn = document.getElementById('btn-run-sim');
+  const resetBtn = document.getElementById('btn-reset-sim');
+  const status = document.getElementById('sim-status');
+  const emailPreview = document.getElementById('email-preview');
+  btn.disabled = true;
+  resetBtn.style.display = 'none';
+
+  // Update email with logged-in user
+  if(currentUser){
+    document.getElementById('email-to').textContent = currentUser.email;
+  }
+
+  const steps = ['step-1','step-2','step-3','step-4'];
+  const messages = [
+    'New cost estimate detected in LINK for Aiko Tanaka...',
+    'Cozm API integration has picked up the document...',
+    'Composing branded email with portal link...',
+    'Email delivered to approver. One-click approval ready.'
+  ];
+
+  // Reset all steps
+  steps.forEach(s=>{
+    const el = document.getElementById(s);
+    el.classList.remove('done','active');
+    el.classList.add('waiting');
+  });
+  emailPreview.classList.remove('visible');
+
+  let i = 0;
+  function nextStep(){
+    if(i > 0){
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+    }
+    if(i < steps.length){
+      const el = document.getElementById(steps[i]);
+      el.classList.remove('waiting');
+      el.classList.add('active');
+      status.innerHTML = '<span style="color:var(--teal)">' + messages[i] + '</span>';
+      i++;
+      if(i === steps.length){
+        setTimeout(()=>{
+          document.getElementById(steps[i-1]).classList.remove('active');
+          document.getElementById(steps[i-1]).classList.add('done');
+          emailPreview.classList.add('visible');
+          status.innerHTML = '<span style="color:var(--green);font-weight:600">Simulation complete. Email delivered and portal link active.</span>';
+          btn.disabled = false;
+          resetBtn.style.display = 'inline-block';
+          simRunning = false;
+          // Add to log
+          const tbody = document.getElementById('log-tbody');
+          const now = new Date();
+          const timeStr = now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+', '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+          const newRow = document.createElement('tr');
+          newRow.style.background = 'var(--green-light)';
+          newRow.style.animation = 'fadeIn .5s ease';
+          newRow.innerHTML = '<td><strong>'+timeStr+'</strong></td><td>Aiko Tanaka</td><td>Cost Estimate</td><td>'+(currentUser?currentUser.email:'approver@globalbank.com')+'</td><td><span class="status-badge status-approved" style="font-size:11px">Delivered</span></td>';
+          tbody.insertBefore(newRow, tbody.firstChild);
+          showToast('Email auto-sent to approver with portal link','success');
+        },1500);
+      } else {
+        setTimeout(nextStep, 1500);
+      }
+    }
+  }
+  nextStep();
+}
+
+function resetSimulation(){
+  const steps = ['step-1','step-2','step-3','step-4'];
+  steps.forEach(s=>{
+    const el = document.getElementById(s);
+    el.classList.remove('done','active');
+    el.classList.add('waiting');
+  });
+  document.getElementById('email-preview').classList.remove('visible');
+  document.getElementById('sim-status').textContent = 'Click to simulate a new cost estimate being produced in LINK';
+  document.getElementById('btn-reset-sim').style.display = 'none';
+  simRunning = false;
 }
 
 // ===== INIT =====
