@@ -418,6 +418,34 @@ tbody tr:last-child td{border-bottom:none}
 .toggle-dot{width:20px;height:20px;border-radius:50%;background:white;position:absolute;top:2px;left:2px;
   transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .toggle.on .toggle-dot{transform:translateX(20px)}
+
+/* LINK mock panel */
+.link-panel{background:white;border:2px dashed var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px;
+  position:relative;overflow:hidden;transition:border-color .3s}
+.link-panel.triggered{border-color:var(--green);border-style:solid}
+.link-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.link-panel-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:#E8EDF2;color:#4A5568}
+.link-panel-title{font-size:15px;font-weight:600}
+.link-doc-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;
+  background:var(--teal-bg);border-radius:var(--rs);margin-bottom:12px}
+.link-doc-info{display:flex;align-items:center;gap:10px}
+.link-doc-icon{width:36px;height:36px;border-radius:8px;background:white;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center}
+.link-doc-name{font-size:13px;font-weight:600}
+.link-doc-meta{font-size:11px;color:var(--gray)}
+.link-status{font-size:12px;font-weight:600;padding:4px 10px;border-radius:6px}
+.link-status.draft{background:#FFF3CD;color:#856404}
+.link-status.final{background:var(--green-light);color:var(--green)}
+.btn-finalise{padding:12px 24px;border-radius:var(--rs);font-size:14px;font-weight:600;color:white;
+  background:#4A5568;transition:all .2s;display:flex;align-items:center;gap:8px;margin-top:4px}
+.btn-finalise:hover{background:#2D3748;transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-finalise:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.link-method-select{display:flex;gap:8px;align-items:center;margin-top:12px}
+.method-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);
+  background:white;color:var(--gray);cursor:pointer;transition:all .15s}
+.method-pill.active{border-color:var(--teal);color:var(--teal);background:var(--teal-bg)}
+.method-pill:hover:not(.active){border-color:#ccc}
 </style>
 </head>
 <body>
@@ -804,12 +832,53 @@ tbody tr:last-child td{border-bottom:none}
           </div>
         </div>
 
-        <h3 style="font-size:16px;margin-bottom:12px">Live Pipeline</h3>
+        <h3 style="font-size:16px;margin-bottom:12px">Simulate the Full Flow</h3>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:16px">This simulates what happens when an advisor finalises a cost estimate in LINK. Select an integration method, then click "Finalise &amp; Release" to watch the full pipeline in action.</p>
+
+        <!-- LINK Mock Panel -->
+        <div class="link-panel" id="link-panel">
+          <div class="link-panel-header">
+            <div>
+              <span class="link-panel-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Assignment Management System (LINK)
+              </span>
+            </div>
+            <span class="link-status draft" id="link-doc-status">Draft</span>
+          </div>
+          <div class="link-doc-row">
+            <div class="link-doc-info">
+              <div class="link-doc-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              </div>
+              <div>
+                <div class="link-doc-name">Cost Estimate &mdash; Aiko Tanaka</div>
+                <div class="link-doc-meta">ASG-2026-005 &bull; Tokyo &rarr; Zurich &bull; CHF 680,000/yr</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--gray);margin-bottom:6px">Integration method:</div>
+              <div class="link-method-select">
+                <span class="method-pill active" data-method="api" onclick="selectMethod('api',this)">API</span>
+                <span class="method-pill" data-method="email" onclick="selectMethod('email',this)">Email Ingestion</span>
+                <span class="method-pill" data-method="sftp" onclick="selectMethod('sftp',this)">Watched Folder</span>
+              </div>
+            </div>
+            <button class="btn-finalise" id="btn-finalise" onclick="finaliseAndRelease()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+              Finalise &amp; Release for Approval
+            </button>
+          </div>
+        </div>
+
+        <!-- Pipeline -->
         <div class="pipeline" id="pipeline">
           <div class="pipeline-step waiting" id="step-1">
             <div class="pipeline-num">1</div>
-            <div class="pipeline-title">Document Produced</div>
-            <div class="pipeline-desc">Cost estimate created in LINK</div>
+            <div class="pipeline-title">Advisor Finalises</div>
+            <div class="pipeline-desc">Clicks "Finalise" in LINK</div>
             <div class="pipeline-arrow">&rsaquo;</div>
           </div>
           <div class="pipeline-step waiting" id="step-2">
@@ -831,23 +900,9 @@ tbody tr:last-child td{border-bottom:none}
           </div>
         </div>
 
-        <div class="sim-controls" style="flex-wrap:wrap">
-          <button class="btn-sim" onclick="runSimulation('api')" style="background:linear-gradient(135deg,var(--black),var(--teal))">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-            Simulate: API Integration
-          </button>
-          <button class="btn-sim" onclick="runSimulation('email')" style="background:linear-gradient(135deg,var(--black),var(--purple))">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Simulate: Email Ingestion
-          </button>
-          <button class="btn-sim" onclick="runSimulation('sftp')" style="background:linear-gradient(135deg,var(--black),var(--yellow))">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-            Simulate: Watched Folder
-          </button>
-          <button class="btn-sim-reset" id="btn-reset-sim" onclick="resetSimulation()" style="display:none">Reset</button>
-        </div>
         <div style="margin-bottom:16px">
-          <span id="sim-status" style="font-size:13px;color:var(--gray)">Select an integration method above to simulate the full document distribution flow</span>
+          <button class="btn-sim-reset" id="btn-reset-sim" onclick="resetSimulation()" style="display:none">Reset Simulation</button>
+          <span id="sim-status" style="font-size:13px;color:var(--gray)"></span>
         </div>
 
         <div class="email-preview" id="email-preview">
@@ -1756,16 +1811,47 @@ function showToast(msg, type){
 
 // ===== AUTO-DISTRIBUTION SIMULATION =====
 let simRunning = false;
+let selectedMethod = 'api';
+
+function selectMethod(method, el){
+  selectedMethod = method;
+  document.querySelectorAll('.method-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function finaliseAndRelease(){
+  if(simRunning) return;
+  // Animate the LINK panel first
+  const panel = document.getElementById('link-panel');
+  const statusBadge = document.getElementById('link-doc-status');
+  const btn = document.getElementById('btn-finalise');
+  btn.disabled = true;
+  statusBadge.textContent = 'Finalising...';
+  statusBadge.className = 'link-status';
+  statusBadge.style.background = 'var(--yellow-light)';
+  statusBadge.style.color = 'var(--yellow)';
+
+  setTimeout(()=>{
+    statusBadge.textContent = 'Finalised';
+    statusBadge.className = 'link-status final';
+    statusBadge.style.background = '';
+    statusBadge.style.color = '';
+    panel.classList.add('triggered');
+    showToast('Document finalised in LINK — triggering Cozm distribution...','info');
+    setTimeout(()=> runSimulation(selectedMethod), 800);
+  }, 1200);
+}
+
 const simConfigs = {
   api: {
     color: 'var(--teal)',
     label: 'API Integration',
-    step1: {title:'Document Produced', desc:'Cost estimate created in LINK'},
+    step1: {title:'Advisor Finalises', desc:'Document marked as final in LINK'},
     step2: {title:'API Webhook Fires', desc:'LINK triggers Cozm webhook endpoint'},
     step3: {title:'Email Composed', desc:'Branded email with portal link generated'},
     step4: {title:'Delivered', desc:'Approver receives email with one-click access'},
     messages: [
-      'New cost estimate produced in LINK for Aiko Tanaka...',
+      'Advisor has finalised cost estimate for Aiko Tanaka in LINK...',
       'LINK webhook triggered &mdash; Cozm API received document payload in real-time...',
       'Composing branded email with direct portal link and document summary...',
       'Email delivered to approver. One-click approval ready.'
@@ -1774,12 +1860,12 @@ const simConfigs = {
   email: {
     color: 'var(--purple)',
     label: 'Email Ingestion',
-    step1: {title:'Document Produced', desc:'Cost estimate created in LINK'},
+    step1: {title:'Advisor Finalises', desc:'Document marked as final in LINK'},
     step2: {title:'Email Received', desc:'LINK emails PDF to intake@cozm.io'},
     step3: {title:'Auto-Parsed & Matched', desc:'Cozm extracts data, matches assignee, composes email'},
     step4: {title:'Delivered', desc:'Approver receives email with one-click access'},
     messages: [
-      'New cost estimate produced in LINK for Aiko Tanaka...',
+      'Advisor has finalised cost estimate for Aiko Tanaka in LINK...',
       'LINK emailed PDF to intake@cozm.io &mdash; Cozm inbox received attachment...',
       'Auto-parsing PDF, matching assignee record, composing approval email...',
       'Email delivered to approver. One-click approval ready.'
@@ -1788,12 +1874,12 @@ const simConfigs = {
   sftp: {
     color: 'var(--yellow)',
     label: 'Watched Folder',
-    step1: {title:'Document Produced', desc:'Cost estimate created in LINK'},
+    step1: {title:'Advisor Finalises', desc:'Document marked as final in LINK'},
     step2: {title:'File Detected', desc:'LINK exports PDF to shared SFTP folder'},
     step3: {title:'Auto-Processed', desc:'Cozm picks up file, matches assignee, composes email'},
     step4: {title:'Delivered', desc:'Approver receives email with one-click access'},
     messages: [
-      'New cost estimate produced in LINK for Aiko Tanaka...',
+      'Advisor has finalised cost estimate for Aiko Tanaka in LINK...',
       'New PDF detected in watched folder /exports/cost-estimates/ &mdash; Cozm picking up file...',
       'File processed, assignee matched, composing branded approval email...',
       'Email delivered to approver. One-click approval ready.'
@@ -1808,7 +1894,6 @@ function runSimulation(method){
   const resetBtn = document.getElementById('btn-reset-sim');
   const status = document.getElementById('sim-status');
   const emailPreview = document.getElementById('email-preview');
-  document.querySelectorAll('.btn-sim').forEach(b=>b.disabled=true);
   resetBtn.style.display = 'none';
 
   if(currentUser){
@@ -1843,7 +1928,6 @@ function runSimulation(method){
           stepEls[3].classList.add('done');
           emailPreview.classList.add('visible');
           status.innerHTML = '<span style="color:var(--green);font-weight:600">Simulation complete (' + config.label + '). Email delivered and portal link active.</span>';
-          document.querySelectorAll('.btn-sim').forEach(b=>b.disabled=false);
           resetBtn.style.display = 'inline-block';
           simRunning = false;
           const tbody = document.getElementById('log-tbody');
@@ -1872,9 +1956,17 @@ function resetSimulation(){
     el.classList.add('waiting');
   });
   document.getElementById('email-preview').classList.remove('visible');
-  document.getElementById('sim-status').textContent = 'Select an integration method above to simulate the full document distribution flow';
+  document.getElementById('sim-status').textContent = '';
   document.getElementById('btn-reset-sim').style.display = 'none';
-  document.querySelectorAll('.btn-sim').forEach(b=>b.disabled=false);
+  // Reset LINK panel
+  const panel = document.getElementById('link-panel');
+  panel.classList.remove('triggered');
+  const statusBadge = document.getElementById('link-doc-status');
+  statusBadge.textContent = 'Draft';
+  statusBadge.className = 'link-status draft';
+  statusBadge.style.background = '';
+  statusBadge.style.color = '';
+  document.getElementById('btn-finalise').disabled = false;
   simRunning = false;
 }
 
