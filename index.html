@@ -731,6 +731,48 @@ tbody tr:last-child td{border-bottom:none}
           <p style="color:rgba(255,255,255,.7);font-size:14px;margin:0">When a cost estimate, balance sheet, or assignment letter is produced in LINK, Cozm automatically detects it and emails the business approver with a direct link to review and approve &mdash; no downloads, no manual emails.</p>
         </div>
 
+        <h3 style="font-size:16px;margin-bottom:12px">Integration Methods</h3>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Cozm offers multiple ways to connect with LINK. Choose the method that best fits your infrastructure &mdash; all achieve the same outcome: zero manual downloads, instant approver notifications.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px">
+          <div style="background:white;border-radius:var(--r);border:2px solid var(--teal);padding:24px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;background:var(--teal);color:white;font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 0 0 8px;letter-spacing:.5px">RECOMMENDED</div>
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <h4 style="font-size:15px;margin-bottom:6px">API Integration</h4>
+            <p style="font-size:13px;color:var(--gray);margin-bottom:12px;line-height:1.6">Direct connection to LINK via webhooks or scheduled polling. Cozm's API listens for new documents in real-time and triggers distribution instantly.</p>
+            <div style="font-size:12px;color:var(--teal);font-weight:600;display:flex;flex-direction:column;gap:4px">
+              <span>&#10003; Real-time detection (under 60 seconds)</span>
+              <span>&#10003; Fully automated, no manual steps</span>
+              <span>&#10003; Bi-directional sync (approvals write back)</span>
+            </div>
+          </div>
+          <div style="background:white;border-radius:var(--r);border:1px solid var(--border);padding:24px">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h4 style="font-size:15px;margin-bottom:6px">Email Ingestion</h4>
+            <p style="font-size:13px;color:var(--gray);margin-bottom:12px;line-height:1.6">LINK emails documents to a dedicated Cozm inbox (e.g. <strong style="color:var(--black)">intake@cozm.io</strong>). Cozm auto-parses the attachment, matches the assignee, and routes it to the portal with an approval email to the business.</p>
+            <div style="font-size:12px;color:var(--purple);font-weight:600;display:flex;flex-direction:column;gap:4px">
+              <span>&#10003; No LINK configuration changes needed</span>
+              <span>&#10003; Works with any system that sends email</span>
+              <span>&#10003; Auto-parses PDF attachments</span>
+            </div>
+          </div>
+          <div style="background:white;border-radius:var(--r);border:1px solid var(--border);padding:24px">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--yellow-light);display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            </div>
+            <h4 style="font-size:15px;margin-bottom:6px">Watched Folder / SFTP</h4>
+            <p style="font-size:13px;color:var(--gray);margin-bottom:12px;line-height:1.6">LINK exports documents to a shared folder or SFTP location. Cozm monitors the folder, picks up new files automatically, and triggers the distribution workflow.</p>
+            <div style="font-size:12px;color:var(--yellow);font-weight:600;display:flex;flex-direction:column;gap:4px">
+              <span>&#10003; Simple setup &mdash; just configure export path</span>
+              <span>&#10003; Works behind firewalls (on-prem friendly)</span>
+              <span>&#10003; Batch processing supported</span>
+            </div>
+          </div>
+        </div>
+
         <div class="auto-rules" id="auto-rules">
           <div class="rule-card">
             <div class="rule-info">
@@ -773,7 +815,7 @@ tbody tr:last-child td{border-bottom:none}
           <div class="pipeline-step waiting" id="step-2">
             <div class="pipeline-num">2</div>
             <div class="pipeline-title">Cozm Detects</div>
-            <div class="pipeline-desc">API integration auto-detects new document</div>
+            <div class="pipeline-desc">Via API, email ingestion, or watched folder</div>
             <div class="pipeline-arrow">&rsaquo;</div>
           </div>
           <div class="pipeline-step waiting" id="step-3">
